@@ -9,6 +9,7 @@ class DatabaseSeeder extends Seeder
     public $seeders = [
         RoleSeeder::class,
         UserSeeder::class,
+        StatusSeeder::class,
 
     ];
 
