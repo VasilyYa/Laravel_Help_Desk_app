@@ -6,6 +6,12 @@ use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
+    public $seeders = [
+        RoleSeeder::class,
+        UserSeeder::class,
+
+    ];
+
     /**
      * Seed the application's database.
      *
@@ -13,6 +19,10 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // \App\Models\User::factory(10)->create();
+        foreach ($this->seeders as $seeder) {
+
+            $this->call($seeder);
+
+        }
     }
 }
