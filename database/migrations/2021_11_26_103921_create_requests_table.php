@@ -18,7 +18,7 @@ class CreateRequestsTable extends Migration
             $table->string('description');
             $table->unsignedBigInteger('status_id');
             $table->unsignedBigInteger('client_id');
-            $table->unsignedBigInteger('manager_id')->nullable();
+            $table->unsignedBigInteger('manager_id')->nullable(); # when a request is created, it doesn't have a manager attached to it
             $table->timestamps();
 
             $table->softDeletes();

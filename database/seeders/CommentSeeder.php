@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
-use App\Models\Request;
+use App\Models\Comment;
 use Illuminate\Database\Seeder;
 
-class RequestSeeder extends Seeder
+class CommentSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -14,6 +14,6 @@ class RequestSeeder extends Seeder
      */
     public function run()
     {
-        Request::factory()->count(15)->create();
+        Comment::factory()->count(100)->create();
     }
 }

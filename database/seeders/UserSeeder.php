@@ -14,24 +14,32 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
+        //clients
         User::factory()->count(10)->create();
-        User::factory()->state([
-            'name' => 'admin',
-            'email' => 'admin@qwe.qwe',
+
+        //managers
+        User::factory()
+            ->count(3)
+            ->sequence(fn($seq) => ['name' => 'manager-' . ($seq->index + 1), 'email' => 'manager-' . ($seq->index + 1) . '@qwe.qwe'])
+            ->state([
             'password' => \Hash::make('qweqweqwe'),
-            'role_id' => 4
+            'role_id' => 2
         ])->create();
+
+        //senior manager
         User::factory()->state([
             'name' => 'senior manager',
             'email' => 's_manager@qwe.qwe',
             'password' => \Hash::make('qweqweqwe'),
             'role_id' => 3
         ])->create();
+
+        //admin
         User::factory()->state([
-            'name' => 'manager',
-            'email' => 'manager@qwe.qwe',
+            'name' => 'admin',
+            'email' => 'admin@qwe.qwe',
             'password' => \Hash::make('qweqweqwe'),
-            'role_id' => 2
+            'role_id' => 4
         ])->create();
     }
 }
