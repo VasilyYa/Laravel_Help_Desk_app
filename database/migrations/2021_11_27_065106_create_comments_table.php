@@ -17,7 +17,7 @@ class CreateCommentsTable extends Migration
             $table->id();
             $table->string('text');
             $table->unsignedBigInteger('author_id');
-            $table->unsignedBigInteger('request_id');
+            $table->unsignedBigInteger('issue_id');
             $table->timestamps();
         });
 
@@ -25,7 +25,7 @@ class CreateCommentsTable extends Migration
             $table->foreign('author_id')->references('id')->on('users')
                 ->onDelete('set null')
                 ->onUpdate('cascade');
-            $table->foreign('request_id')->references('id')->on('requests')
+            $table->foreign('issue_id')->references('id')->on('issues')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
         });
@@ -40,7 +40,7 @@ class CreateCommentsTable extends Migration
     {
         Schema::table('comments', function (Blueprint $table) {
             $table->dropForeign(['author_id']);
-            $table->dropForeign(['request_id']);
+            $table->dropForeign(['issue_id']);
         });
 
         Schema::dropIfExists('comments');

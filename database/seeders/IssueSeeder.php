@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
-use App\Models\Request;
+use App\Models\Issue;
 use Illuminate\Database\Seeder;
 
-class RequestSeeder extends Seeder
+class IssueSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -14,6 +14,6 @@ class RequestSeeder extends Seeder
      */
     public function run()
     {
-        Request::factory()->count(15)->create();
+        Issue::factory()->count(15)->create();
     }
 }

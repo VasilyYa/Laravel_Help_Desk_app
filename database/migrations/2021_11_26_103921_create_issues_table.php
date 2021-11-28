@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateRequestsTable extends Migration
+class CreateIssuesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateRequestsTable extends Migration
      */
     public function up()
     {
-        Schema::create('requests', function (Blueprint $table) {
+        Schema::create('issues', function (Blueprint $table) {
             $table->id();
             $table->string('description');
             $table->unsignedBigInteger('status_id');
@@ -24,7 +24,7 @@ class CreateRequestsTable extends Migration
             $table->softDeletes();
         });
 
-        Schema::table('requests', function (Blueprint $table) {
+        Schema::table('issues', function (Blueprint $table) {
             $table->foreign('status_id')->references('id')->on('statuses')
                 ->onDelete('restrict')
                 ->onUpdate('cascade');
@@ -44,12 +44,12 @@ class CreateRequestsTable extends Migration
      */
     public function down()
     {
-        Schema::table('requests', function (Blueprint $table) {
+        Schema::table('issues', function (Blueprint $table) {
             $table->dropForeign(['manager_id']);
             $table->dropForeign(['client_id']);
             $table->dropForeign(['status_id']);
         });
 
-        Schema::dropIfExists('requests');
+        Schema::dropIfExists('issues');
     }
 }
