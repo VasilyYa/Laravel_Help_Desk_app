@@ -2,11 +2,19 @@
 
 namespace Database\Factories;
 
+use App\Models\Request;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class RequestFactory extends Factory
 {
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = Request::class;
+
     /**
      * Define the model's default state.
      *
@@ -15,12 +23,12 @@ class RequestFactory extends Factory
     public function definition()
     {
         return [
-            'description' => $this->faker->sentence(),
+            'description' => $this->faker->sentence(10), // +/- 40% from words number
             'status_id' => 1,
             'client_id' => User::all()->where('role_id', 1)->random()->id,
             'manager_id' => $this->faker->randomElement([
                 User::all()->where('role_id', 2)->random()->id,
-                null //null if manager is not attached yet
+                null //when manager is not attached yet
             ]),
         ];
     }

@@ -2,12 +2,19 @@
 
 namespace Database\Factories;
 
+use App\Models\Comment;
 use App\Models\Request;
-use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class CommentFactory extends Factory
 {
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = Comment::class;
+
     /**
      * Define the model's default state.
      *
@@ -16,14 +23,15 @@ class CommentFactory extends Factory
     public function definition()
     {
         $randomTime = $this->faker->dateTimeBetween('-2 days');
-        $request = Request::query()->inRandomOrder()->first();
+        $randomRequest = Request::query()->inRandomOrder()->first();
+
         return [
-            'text' => $this->faker->sentence(4), // +/- 40% from 4 words
+            'text' => $this->faker->sentence(4), // +/- 40% from words number
             'author_id' => $this->faker->randomElement([
-                $request->client_id,
-                $request->manager_id ?? $request->client_id
+                $randomRequest->client_id,
+                $randomRequest->manager_id ?? $randomRequest->client_id
             ]),
-            'request_id' => $request->id,
+            'request_id' => $randomRequest->id,
             'created_at' => $randomTime,
             'updated_at' => $randomTime,
         ];
