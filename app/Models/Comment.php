@@ -19,4 +19,10 @@ class Comment extends Model
         'author_id',
         'issue_id',
     ];
+
+    public function getAuthorFullNameAttribute()
+    {
+        $author = User::find($this->author_id);
+        return $author->name . ' ' . $author->last_name;
+    }
 }

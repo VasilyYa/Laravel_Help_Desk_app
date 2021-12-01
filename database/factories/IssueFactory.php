@@ -22,14 +22,19 @@ class IssueFactory extends Factory
      */
     public function definition()
     {
+        $randomTime = $this->faker->dateTimeInInterval('-10 days', '+7 days');
+
         return [
-            'description' => $this->faker->sentence(10), // +/- 40% from words number
+            'subject' => $this->faker->sentence(8), // +/- 40% from words number
+            'detail' => $this->faker->text(500),
             'status_id' => 1,
             'client_id' => User::all()->where('role_id', 1)->random()->id,
             'manager_id' => $this->faker->randomElement([
                 User::all()->where('role_id', 2)->random()->id,
                 null //when manager is not attached yet
             ]),
+            'created_at' => $randomTime,
+            'updated_at' => $randomTime,
         ];
     }
 }

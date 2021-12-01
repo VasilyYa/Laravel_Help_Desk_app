@@ -63,4 +63,50 @@ class User extends Authenticatable
     protected $appends = [
         'profile_photo_url',
     ];
+
+    public function getFullNameAttribute()
+    {
+        return $this->name . ' ' . $this->last_name;
+    }
+
+    public function issues()
+    {
+        return $this->hasMany(Issue::class,'manager_id','id');
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class,'author_id','id');
+    }
+
+    public function isClient(): bool
+    {
+        return (int)$this->role_id === 1;
+    }
+    public function isManager(): bool
+    {
+        return (int)$this->role_id === 2;
+    }
+    public function isSeniorManager(): bool
+    {
+        return (int)$this->role_id === 3;
+    }
+    public function isAdmin(): bool
+    {
+        return (int)$this->role_id === 4;
+    }
+
+    public function isClientOfIssue(Issue $issue): bool
+    {
+        return $this->id == $issue->client_id;
+    }
+    public function isManagerOfIssue(Issue $issue): bool
+    {
+        return $this->id == $issue->manager_id;
+    }
+
+    public function isAuthorOfComment(Comment $comment): bool
+    {
+        return $this->id == $comment->author_id;
+    }
 }

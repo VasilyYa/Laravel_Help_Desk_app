@@ -17,9 +17,20 @@ class Issue extends Model
      * @var string[]
      */
     protected $fillable = [
-        'description',
+        'subject',
+        'detail',
         'status_id',
         'client_id',
         'manager_id',
     ];
+
+    public function isAttached(): bool
+    {
+        return $this->manager_id !== null;
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class)->orderBy('created_at');
+    }
 }

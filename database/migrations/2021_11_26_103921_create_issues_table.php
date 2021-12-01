@@ -15,8 +15,9 @@ class CreateIssuesTable extends Migration
     {
         Schema::create('issues', function (Blueprint $table) {
             $table->id();
-            $table->string('description');
-            $table->unsignedBigInteger('status_id');
+            $table->string('subject');
+            $table->text('detail');
+            $table->unsignedBigInteger('status_id')->default(1); //issue opened status
             $table->unsignedBigInteger('client_id');
             $table->unsignedBigInteger('manager_id')->nullable(); # when a request is created, it doesn't have a manager attached to it
             $table->timestamps();

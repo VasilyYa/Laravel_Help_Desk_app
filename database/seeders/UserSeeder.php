@@ -15,10 +15,17 @@ class UserSeeder extends Seeder
     public function run()
     {
         //clients
-        User::factory()->count(10)->create();
+        User::factory()->count(5)->create();
+        User::factory()
+            ->count(5)
+            ->sequence(fn($seq) => [
+                'name' => 'client-' . ($seq->index + 1),
+                'email' => 'client-' . ($seq->index + 1) . '@qwe.qwe'
+            ])->create();
+
+        $passwordHash = \Hash::make('qweqweqwe');
 
         //managers
-        $passwordHash = \Hash::make('qweqweqwe');
         User::factory()
             ->count(3)
             ->sequence(fn($seq) => [
@@ -45,5 +52,6 @@ class UserSeeder extends Seeder
             'password' => $passwordHash,
             'role_id' => 4
         ])->create();
+
     }
 }

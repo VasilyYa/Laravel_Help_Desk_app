@@ -18,7 +18,10 @@ class StatusSeeder extends Seeder
             'description' => 'opened'
         ]);
         Status::create([
-            'description' => 'wait for answer'
+            'description' => 'wait for client\'s answer'
+        ]);
+        Status::create([
+            'description' => 'wait for manager\'s answer'
         ]);
         Status::create([
             'description' => 'closed'
