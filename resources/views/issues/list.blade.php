@@ -22,6 +22,7 @@
     @php
         $numberInList = $issuesPaginator->firstItem();
     @endphp
+    @if ($numberInList >= 1)
     <ol class="pl-2">
         @foreach($issuesPaginator as $issue)
             <li class="py-3">
@@ -30,14 +31,17 @@
                     {{ $issue->subject }}
                 </a>
                 <div class="pl-6 text-sm text-gray-600">
-                    Создана {{ $issue->created_at->diffForHumans() }}, комментариев - {{ count($issue->comments) }}
+                    Создана {{ $issue->created_at->diffForHumans() }}, комментариев - {{ count($issue->comments) }} <span class="font-bold">{{count($issue->comments) > 0 ? '(последний ' . $issue->comments()->latest()->first()->created_at->format('d.m.Y H:i') . ')' : ''}}</span>
                     @if(auth()->user()->isSeniorManager() || auth()->user()->isAdmin())
-                        , <span class="bg-red-600 text-white rounded">{{ $issue->isAttached() ? '' : 'Не прикреплена'}}</span>
+                        &nbsp;<span class="bg-red-600 text-white rounded">{{ $issue->isAttached() ? '' : '(не прикреплена)'}}</span>
                     @endif
                 </div>
             </li>
         @endforeach
     </ol>
+    @else
+        Заявки отсутствуют
+    @endif
 
     {{--  Pagination  --}}
     <div class="max-w-md py-3">

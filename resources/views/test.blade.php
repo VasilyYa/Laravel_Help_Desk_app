@@ -1,2 +1,0 @@
-TEST TEMPLATE
-ID: {{$issue}}

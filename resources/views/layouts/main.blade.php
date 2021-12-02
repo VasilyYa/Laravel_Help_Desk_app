@@ -22,7 +22,7 @@
     </style>
 </head>
 
-<body class="bg-gray-200 tracking-wider tracking-normal">
+<body class="bg-green-100 tracking-wider tracking-normal">
 
 <!--Top menu-->
 @include('includes.top-menu')
@@ -33,7 +33,7 @@
     @includeIf('includes.side-menu')
 
     <!--Content-->
-    <div class="w-full p-8 mt-6 lg:mt-0 text-gray-900 leading-normal bg-white border border-gray-400 border-rounded">
+    <div class="w-full p-8 mt-0 text-gray-900 leading-normal bg-gray-50 border border-gray-400 border-rounded">
         @yield('content')
     </div>
 

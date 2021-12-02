@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Cache;
 
 abstract class Repository implements RepositoryInterface
 {
-    //const CACHE_TTL = 84600; //default value
+    //const CACHE_TTL = 60; //(sec.) default value
     const CACHE_TTL = 1; //TODO: change this test value
 
     protected Model $model;
@@ -78,8 +78,36 @@ abstract class Repository implements RepositoryInterface
                 ->paginate($perPage);
         });
 
-        //retrieve tagged cache by key name
-        return Cache::tags($tagName)->get($keyName);
+        return Cache::tags($tagName)->get($keyName); //retrieve tagged cache by key name
+    }
+
+    public function getAllExceptIdPaginator(int $perPage, int $exceptId): LengthAwarePaginator
+    {
+        $tagName = $this->getModelClass() . '-AllExceptIdOnPage';
+        $keyName = $tagName . (request('page') ?? '1');
+        Cache::tags($tagName) // tag many caches with one tag name
+        ->remember($keyName, self::CACHE_TTL, function () use ($perPage, $exceptId) {
+            return $this->startCondition()
+                ->where('id','!=', $exceptId)
+                ->orderBy('id')
+                ->paginate($perPage);
+        });
+
+        return Cache::tags($tagName)->get($keyName); //retrieve tagged cache by key name
+    }
+    public function getAllExceptAdminsPaginator(int $perPage): LengthAwarePaginator
+    {
+        $tagName = $this->getModelClass() . '-AllExceptOnPage';
+        $keyName = $tagName . (request('page') ?? '1');
+        Cache::tags($tagName) // tag many caches with one tag name
+        ->remember($keyName, self::CACHE_TTL, function () use ($perPage) {
+            return $this->startCondition()
+                ->where('role_id','!=', 4) //TODO: change this hard code link to admin role
+                ->orderBy('id')
+                ->paginate($perPage);
+        });
+
+        return Cache::tags($tagName)->get($keyName); //retrieve tagged cache by key name
     }
 
     public function getAllPaginatorOrdDescByUpdated(int $perPage): LengthAwarePaginator
@@ -93,8 +121,7 @@ abstract class Repository implements RepositoryInterface
                 ->paginate($perPage);
         });
 
-        //retrieve tagged cache by key name
-        return Cache::tags($tagName)->get($keyName);
+        return Cache::tags($tagName)->get($keyName); //retrieve tagged cache by key name
     }
 
     public function resetCache(int $id = null)
@@ -109,7 +136,7 @@ abstract class Repository implements RepositoryInterface
         }
 
         //reset cache 'All'
-        cache()->forget($this->getModelClass() . '-All');
+        cache()->forget($this->getModelClass() . '-All'); //reset cache 'All'
     }
 
 

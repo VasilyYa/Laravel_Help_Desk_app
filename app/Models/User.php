@@ -35,6 +35,19 @@ class User extends Authenticatable
     ];
 
     /**
+     * The attributes that are visible (can be retrieved by ->getVisible()).
+     *
+     * @var string[]
+     */
+    protected $visible = [
+        'name',
+        'last_name',
+        'email',
+        'phone',
+        'role_id',
+    ];
+
+    /**
      * The attributes that should be hidden for serialization.
      *
      * @var array

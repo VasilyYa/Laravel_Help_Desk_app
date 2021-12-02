@@ -25,4 +25,9 @@ class Comment extends Model
         $author = User::find($this->author_id);
         return $author->name . ' ' . $author->last_name;
     }
+
+    public function author()
+    {
+        return $this->belongsTo(User::class, 'author_id', 'id');
+    }
 }

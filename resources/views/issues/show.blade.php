@@ -148,7 +148,7 @@
 
     <p class="p-3">
         <span class="underline">Дата создания:</span>
-        {{ $issue->created_at->format('d.m.Y h:m') }} ({{$issue->created_at->diffForHumans()}})
+        {{ $issue->created_at->format('d.m.Y H:i') }} ({{$issue->created_at->diffForHumans()}})
     </p>
 
     <p class="p-3">
@@ -161,12 +161,14 @@
                     <span class="underline">
                         @if($comment->author_id == auth()->user()->id)
                             От Вас
+                        @elseif($comment->author()->first() !== null)
+                            От {{ $comment->author()->first()->full_name }}
                         @else
-                            От {{ $comment->author_full_name }}
+                            От {{ $comment->author()->withTrashed()->first()->full_name }} <span class="bg-red-600 text-white text-sm rounded">(пользователь был удален)</span>
                         @endif
                     </span>
                     &nbsp;
-                    ({{ $comment->created_at->format('d.m.y h:m') }}):
+                    ({{ $comment->created_at->format('d.m.Y H:i') }}):
                     <br>
 
                     <div class="ml-6 italic text-sm">

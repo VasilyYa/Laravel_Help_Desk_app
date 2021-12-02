@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Models\Comment;
 use App\Models\Issue;
+use App\Policies\CommentPolicy;
 use App\Policies\IssuePolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
@@ -17,6 +19,7 @@ class AuthServiceProvider extends ServiceProvider
     protected $policies = [
         // 'App\Models\Model' => 'App\Policies\ModelPolicy',
         Issue::class => IssuePolicy::class,
+        Comment::class => CommentPolicy::class,
     ];
 
     /**
@@ -28,6 +31,8 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        //
+        Gate::define('accessAdmin', function ($user) {
+           return $user->isAdmin();
+        });
     }
 }

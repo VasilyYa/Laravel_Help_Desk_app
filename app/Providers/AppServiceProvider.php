@@ -2,13 +2,16 @@
 
 namespace App\Providers;
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\IssueController;
 use App\Mediators\Mediator;
 use App\Repositories\CommentRepository;
 use App\Repositories\IssueRepository;
+use App\Repositories\UserRepository;
 use App\Services\CommentService;
 use App\Services\IssueService;
+use App\Services\UserService;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -34,6 +37,14 @@ class AppServiceProvider extends ServiceProvider
                 return new Mediator(
                     $this->app->make(CommentRepository::class),
                     $this->app->make(CommentService::class)
+                );
+            });
+        $this->app->when([AdminController::class])
+            ->needs(Mediator::class)
+            ->give(function () {
+                return new Mediator(
+                    $this->app->make(UserRepository::class),
+                    $this->app->make(UserService::class)
                 );
             });
     }
