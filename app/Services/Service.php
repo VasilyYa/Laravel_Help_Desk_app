@@ -40,4 +40,10 @@ abstract class Service implements ServiceInterface
     {
         return $model->restore();
     }
+
+    public function setUpdatedAtToNow(Model $model): bool
+    {
+        return $this->update($model, ['updated_at' => now()]);
+    }
+
 }

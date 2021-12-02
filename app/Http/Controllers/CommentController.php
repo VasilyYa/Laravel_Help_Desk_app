@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CommentRequest;
+use App\Jobs\CommentWasWrittenJob;
 use App\Jobs\IssueChangeStatusJob;
 use App\Mail\IssueChangeStatus;
 use App\Mediators\Mediator;
@@ -54,26 +55,34 @@ class CommentController extends Controller
         //store a comment
         $comment = $this->mediator->service->create($request->all());
 
-        //change issue status (auto changing issue's updated_at)
         $issueRepository = app(IssueRepository::class);
         $issueService = app(IssueService::class);
         $issue = $issueRepository->getById($request->input('issue_id'));
-        $delay = now()->addSeconds(7);
-        if(auth()->user()->isManager()) {
-            $issueService->resetStatusToDefault($issue);
+
+        //actualize an issue - need for relevance control !!!
+        $issueService->setUpdatedAtToNow($issue);
+
+        $delay = now()->addSeconds(5);
+
+        //change issue status and notify the users (depending on app business logic):
+        if (auth()->user()->isClient()) { // or $comment->author->isClient()
+
+            //notify manager about new comments from client
+            CommentWasWrittenJob::dispatch($issue, $issue->manager)->delay($delay);
+
+            if ($issue->status->isWaitForClientAnswer()) { // last comment was written by manager
+
+                $issueService->setStatusWaitForManagerAnswer($issue);
+            }
+
+        } elseif (
+            auth()->user()->isManager() // or $comment->author->isManager()
+            && $issue->status->isWaitForManagerAnswer() // last comment was written by client
+        ) {
             $issueService->setStatusWaitForClientAnswer($issue);
 
-            //Mail::to($issue->client)->send(new IssueChangeStatus($issue, $issue->client));
+            //notify client about changing issue status
             IssueChangeStatusJob::dispatch($issue, $issue->client)->delay($delay);
-
-
-
-        } else {
-            $issueService->resetStatusToDefault($issue);
-            $issueService->setStatusWaitForManagerAnswer($issue);
-
-            //Mail::to($issue->manager)->send(new IssueChangeStatus($issue, $issue->manager));
-            IssueChangeStatusJob::dispatch($issue, $issue->manager)->delay($delay);
         }
 
         return response()->json(
@@ -89,7 +98,8 @@ class CommentController extends Controller
      * @param Comment $comment
      * @return JsonResponse
      */
-    public function show(Comment $comment)
+    public
+    function show(Comment $comment)
     {
         return response()->json(['data' => $comment]);
     }
@@ -100,7 +110,8 @@ class CommentController extends Controller
      * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public
+    function edit($id)
     {
         //
     }
@@ -112,7 +123,8 @@ class CommentController extends Controller
      * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public
+    function update(Request $request, $id)
     {
         //
     }
@@ -123,7 +135,8 @@ class CommentController extends Controller
      * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public
+    function destroy($id)
     {
         //
     }

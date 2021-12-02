@@ -2,7 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Mail\IssueChangeStatus;
+use App\Mail\CommentWasWritten;
 use App\Models\Issue;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
@@ -13,7 +13,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Mail;
 
-class IssueChangeStatusJob implements ShouldQueue
+class CommentWasWrittenJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -27,6 +27,7 @@ class IssueChangeStatusJob implements ShouldQueue
      */
     public function __construct(Issue $issue, User $user)
     {
+        //
         $this->issue = $issue;
         $this->user = $user;
     }
@@ -39,7 +40,6 @@ class IssueChangeStatusJob implements ShouldQueue
     public function handle()
     {
         Mail::to($this->user)
-            ->send(new IssueChangeStatus($this->issue, $this->user));
+            ->send(new CommentWasWritten($this->issue, $this->user));
     }
-
 }

@@ -10,7 +10,7 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Config;
 
-class IssueChangeStatus extends Mailable
+class CommentWasWritten extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -37,10 +37,10 @@ class IssueChangeStatus extends Mailable
     {
         return $this
             ->from(Config::get('mail.from.address'), Config::get('mail.from.name'))
-            ->subject('Изменение статуса заявки')
-            ->markdown('emails.issue-change-status-markdown', [
+            ->subject('Добавлен новый комментарий')
+            ->markdown('emails.issue-change-status-markdown.blade', [
                 'issue' => $this->issue,
-                'user' => $this->user
+                'user' => $this->user,
             ]);
     }
 }

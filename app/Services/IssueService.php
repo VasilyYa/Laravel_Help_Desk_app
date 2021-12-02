@@ -13,24 +13,25 @@ class IssueService extends Service
         return Issue::class;
     }
 
-    public function resetStatusToDefault(Model $model): bool
+    public function resetStatusToDefault(Issue $model): bool
     {
         return $this->setStatusOpened($model);
     }
-    public function setStatusOpened(Model $model): bool
+    public function setStatusOpened(Issue $model): bool
     {
         return $this->update($model, ['status_id' => 1]);
     }
-    public function setStatusWaitForClientAnswer(Model $model): bool
+    public function setStatusWaitForClientAnswer(Issue $model): bool
     {
         return $this->update($model, ['status_id' => 2]);
     }
-    public function setStatusWaitForManagerAnswer(Model $model): bool
+    public function setStatusWaitForManagerAnswer(Issue $model): bool
     {
         return $this->update($model, ['status_id' => 3]);
     }
-    public function setStatusClosed(Model $model): bool
+    public function setStatusClosed(Issue $model): bool
     {
         return $this->update($model, ['status_id' => 4]);
     }
+
 }
