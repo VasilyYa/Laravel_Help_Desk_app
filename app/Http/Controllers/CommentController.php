@@ -70,14 +70,14 @@ class CommentController extends Controller
             //notify manager about new comments from client
             CommentWasWrittenJob::dispatch($issue, $issue->manager)->delay($delay);
 
-            if ($issue->status->isWaitForClientAnswer()) { // last comment was written by manager
+            if ($issue->status->isWaitForClientAnswer()) {
 
                 $issueService->setStatusWaitForManagerAnswer($issue);
             }
 
         } elseif (
             auth()->user()->isManager() // or $comment->author->isManager()
-            && $issue->status->isWaitForManagerAnswer() // last comment was written by client
+            && ($issue->status->isWaitForManagerAnswer() || $issue->status->isOpened())
         ) {
             $issueService->setStatusWaitForClientAnswer($issue);
 

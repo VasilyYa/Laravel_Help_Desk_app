@@ -27,7 +27,6 @@ class CommentWasWrittenJob implements ShouldQueue
      */
     public function __construct(Issue $issue, User $user)
     {
-        //
         $this->issue = $issue;
         $this->user = $user;
     }

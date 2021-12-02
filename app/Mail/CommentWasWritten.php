@@ -38,7 +38,7 @@ class CommentWasWritten extends Mailable
         return $this
             ->from(Config::get('mail.from.address'), Config::get('mail.from.name'))
             ->subject('Добавлен новый комментарий')
-            ->markdown('emails.issue-change-status-markdown.blade', [
+            ->markdown('emails.new-comments-written-markdown', [
                 'issue' => $this->issue,
                 'user' => $this->user,
             ]);
