@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\IssueCreatedEvent;
 use App\Http\Requests\AttachRequest;
 use App\Http\Requests\IssueRequest;
 use App\Mediators\Mediator;
@@ -79,6 +80,10 @@ class IssueController extends Controller
     {
         $request->merge(['status_id' => 1, 'client_id' => auth()->user()->id]); //for safety reasons
         $issue = $this->mediator->service->create($request->all());
+
+        //notify senior manager about created issue
+        IssueCreatedEvent::dispatch($issue);
+
         return response()->json(
             [],
             Response::HTTP_CREATED,

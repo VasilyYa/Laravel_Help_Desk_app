@@ -28,6 +28,19 @@ class UserRepository extends Repository
         return cache()->get($keyName);
     }
 
+    public function getAllSeniorManagers(): Collection
+    {
+        $keyName = $this->getModelClass() . '-AllSeniorManagers';
+        cache()->remember($keyName,self::CACHE_TTL , function () {
+            return $this->startCondition()
+                ->where('role_id', 3)
+                ->orderBy('id')
+                ->get();
+        });
+
+        return cache()->get($keyName);
+    }
+
     public function getManagerOf(Issue $issue): ?Model
     {
         if(!isset($issue->manager_id)) {
