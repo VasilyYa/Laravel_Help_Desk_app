@@ -1,4 +1,4 @@
-<div class="container w-full flex mx-auto px-2 mt-0 justify-between">
+<div class="container w-full lg:w-3/4 flex mx-auto px-2 mt-0 justify-between">
 
     {{--  actions menu  --}}
     <div class="flex flex-nowrap justify-start">

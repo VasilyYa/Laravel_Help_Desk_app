@@ -27,7 +27,8 @@
 <!--Top menu-->
 @include('includes.top-menu')
 
-<div class="container w-full flex flex-wrap mx-auto px-2 mt-3">
+{{--<div class="container w-full lg:w-3/4 flex flex-wrap mx-auto px-2 mt-3">--}}
+<div class="{{ (url()->current() === route('adminIndex')) ? 'min-w-1024' : '' }} w-full md:w-4/5 flex flex-wrap mx-auto px-2 mt-3">
 
     <!--Side menu-->
     @includeIf('includes.side-menu')

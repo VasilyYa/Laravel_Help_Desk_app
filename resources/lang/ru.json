@@ -729,9 +729,11 @@
     "Issue has been successfully attached!": "Заявка успешно прикреплена!",
     "User has been deleted!": "Пользователь удален!",
     "User has been edited!": "Пользователь отредактирован!",
+    "User has been added!": "Пользователь добавлен!",
     "All issues": "Все заявки",
     "Free issues": "Свободные заявки",
     "Management": "Администрирование",
     "User management": "Управление пользователями",
-    "Edit the user": "Редактировать пользователя"
+    "Edit the user": "Редактировать пользователя",
+    "Register a new user": "Зарегистрировать нового пользователя"
 }

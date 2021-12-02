@@ -50,6 +50,8 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::get('/', [AdminController::class, 'index'])->name('adminIndex');
         Route::get('/edit-user/{user}', [AdminController::class, 'editUser'])->name('adminEditUser');
         Route::put('/update-user/{user}', [AdminController::class, 'updateUser'])->name('adminUpdateUser');
+        Route::get('/register-user', [AdminController::class, 'createUser'])->name('adminRegisterUser');
+        Route::post('/store-user', [AdminController::class, 'storeUser'])->name('adminStoreUser');
         Route::delete('/delete-user/{user}', [AdminController::class, 'deleteUser'])->name('adminDeleteUser');
     });
 

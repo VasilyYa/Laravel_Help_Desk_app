@@ -92,6 +92,11 @@ class User extends Authenticatable
         return $this->hasMany(Comment::class,'author_id','id');
     }
 
+    public function role()
+    {
+        return $this->belongsTo(Role::class);
+    }
+
     public function isClient(): bool
     {
         return (int)$this->role_id === 1;

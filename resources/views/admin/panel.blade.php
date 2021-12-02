@@ -65,7 +65,12 @@
 
     {{--  Header  --}}
     <div class="font-sans">
-        <h1 class="font-sans break-normal text-gray-900 pt-0 pb-8 text-xl">@yield('title')</h1>
+        <h1 class="font-sans break-normal text-gray-900 pt-0 text-xl text-center">@yield('title')</h1>
+    </div>
+
+    {{--  Register a new user --}}
+    <div class="py-4 text-center">
+        <a class="bg-blue-500 hover:bg-blue-700 text-sm text-white font-bold py-1 px-4 rounded-full" href="{{ route('adminRegisterUser') }}">{{ __('Register a new user') }}</a>
     </div>
 
     {{--  List all entities  --}}
@@ -78,8 +83,7 @@
         <div class="flex flex-col">
             <div class="w-full">
                 <div class="border-b border-gray-200 shadow">
-
-                    @if(!empty($visible))
+                @if(!empty($visible))
                     <table class="divide-y divide-gray-300 ">
                         <thead class="bg-gray-50">
                         <tr>
@@ -121,7 +125,7 @@
             </div>
 
             {{--  Pagination  --}}
-            <div class="max-w-md py-3">
+            <div class="max-w-md py-4">
                 {{ $usersPaginator->links() }}
             </div>
 
