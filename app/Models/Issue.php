@@ -31,6 +31,22 @@ class Issue extends Model
 
     public function comments()
     {
-        return $this->hasMany(Comment::class);//->orderBy('created_at');
+        return $this->hasMany(Comment::class);
     }
+
+    public function client()
+    {
+        return $this->belongsTo(User::class, 'client_id');
+    }
+
+    public function manager()
+    {
+        return $this->belongsTo(User::class, 'manager_id');
+    }
+
+    public function status()
+    {
+        return $this->belongsTo(Status::class);
+    }
+
 }

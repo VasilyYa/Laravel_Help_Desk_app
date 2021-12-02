@@ -13,6 +13,10 @@ class IssueService extends Service
         return Issue::class;
     }
 
+    public function resetStatusToDefault(Model $model): bool
+    {
+        return $this->setStatusOpened($model);
+    }
     public function setStatusOpened(Model $model): bool
     {
         return $this->update($model, ['status_id' => 1]);

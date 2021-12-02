@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CommentRequest;
+use App\Jobs\IssueChangeStatusJob;
+use App\Mail\IssueChangeStatus;
 use App\Mediators\Mediator;
 use App\Models\Comment;
 use App\Repositories\IssueRepository;
@@ -10,6 +12,7 @@ use App\Services\IssueService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Mail;
 
 class CommentController extends Controller
 {
@@ -51,14 +54,26 @@ class CommentController extends Controller
         //store a comment
         $comment = $this->mediator->service->create($request->all());
 
-        //change issue status
+        //change issue status (auto changing issue's updated_at)
         $issueRepository = app(IssueRepository::class);
         $issueService = app(IssueService::class);
         $issue = $issueRepository->getById($request->input('issue_id'));
+        $delay = now()->addSeconds(7);
         if(auth()->user()->isManager()) {
+            $issueService->resetStatusToDefault($issue);
             $issueService->setStatusWaitForClientAnswer($issue);
+
+            //Mail::to($issue->client)->send(new IssueChangeStatus($issue, $issue->client));
+            IssueChangeStatusJob::dispatch($issue, $issue->client)->delay($delay);
+
+
+
         } else {
+            $issueService->resetStatusToDefault($issue);
             $issueService->setStatusWaitForManagerAnswer($issue);
+
+            //Mail::to($issue->manager)->send(new IssueChangeStatus($issue, $issue->manager));
+            IssueChangeStatusJob::dispatch($issue, $issue->manager)->delay($delay);
         }
 
         return response()->json(
