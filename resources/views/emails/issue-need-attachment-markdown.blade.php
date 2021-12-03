@@ -2,7 +2,7 @@
 
 Здравствуйте, {{ $user->full_name }} !
 
-Создана новая заявка № {{ $issue->id }}.
+Заявка № {{ $issue->id }} требует прикрепления к менеджеру.
 
 @component('mail::button', ['url' => route('issuesShow', ['issue' => $issue->id])])
 Посмотреть заявку

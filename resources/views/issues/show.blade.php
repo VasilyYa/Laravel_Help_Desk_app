@@ -233,7 +233,7 @@
                 <select name="manager_id" id="manager">
                     <option disabled {{ (!isset($attachedManager)) ? 'selected' : '' }} value="">выберите</option>
                     @foreach($managers as $manager)
-                            <option value="{{ $manager->id}}" {{(isset($attachedManager) && $manager->id == $attachedManager->id) ? 'selected' : '' }}>{{$manager->full_name}} (заявок - {{count($manager->issues()->get())}})</option>
+                            <option value="{{ $manager->id}}" {{(isset($attachedManager) && $manager->id == $attachedManager->id) ? 'selected' : '' }}>{{$manager->full_name}} (заявок - {{count($manager->issuesManaged()->get())}})</option>
                     @endforeach
                 </select>
                 <button class="bg-green-600 hover:bg-green-800 text-white font-bold py-2 px-4 rounded" type="submit">Сохранить изменения</button>

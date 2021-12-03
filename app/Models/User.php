@@ -82,7 +82,7 @@ class User extends Authenticatable
         return $this->name . ' ' . $this->last_name;
     }
 
-    public function issues()
+    public function issuesManaged()
     {
         return $this->hasMany(Issue::class,'manager_id','id');
     }

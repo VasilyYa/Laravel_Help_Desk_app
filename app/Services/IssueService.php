@@ -33,5 +33,9 @@ class IssueService extends Service
     {
         return $this->update($model, ['status_id' => 4]);
     }
+    public function detachManager(Issue $model): bool
+    {
+        return $this->update($model, ['manager_id' => null]);
+    }
 
 }

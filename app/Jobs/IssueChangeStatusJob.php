@@ -38,8 +38,7 @@ class IssueChangeStatusJob implements ShouldQueue
      */
     public function handle()
     {
-        Mail::to($this->user)
-            ->send(new IssueChangeStatus($this->issue, $this->user));
+        Mail::to($this->user)->send(new IssueChangeStatus($this->issue, $this->user));
     }
 
 }

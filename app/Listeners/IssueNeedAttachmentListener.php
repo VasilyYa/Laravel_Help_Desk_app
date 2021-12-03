@@ -3,13 +3,15 @@
 namespace App\Listeners;
 
 use App\Events\IssueCreatedEvent;
-use App\Mail\IssueCreated;
+use App\Events\IssueDetachedEvent;
+use App\Jobs\IssueNeedAttachmentJob;
+use App\Mail\IssueNeedAttachment;
 use App\Repositories\UserRepository;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Mail;
 
-class IssueCreatedListener
+class IssueNeedAttachmentListener
 {
     /**
      * Create the event listener.
@@ -24,16 +26,16 @@ class IssueCreatedListener
     /**
      * Handle the event.
      *
-     * @param IssueCreatedEvent $event
+     * @param IssueCreatedEvent|IssueDetachedEvent $event
      * @return void
      */
-    public function handle(IssueCreatedEvent $event)
+    public function handle(IssueCreatedEvent|IssueDetachedEvent $event)
     {
         $userRepository = app(UserRepository::class);
         $seniorManagers = $userRepository->getAllSeniorManagers();
         foreach ($seniorManagers as $seniorManager) {
 
-            Mail::to($seniorManager)->send(new IssueCreated($event->issue, $seniorManager));
+            IssueNeedAttachmentJob::dispatch($event->issue, $seniorManager);
         }
     }
 }

@@ -2,17 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Actions\Fortify\UpdateUserProfileInformation;
+use App\Events\IssueDetachedEvent;
 use App\Http\Requests\UserRequest;
 use App\Mediators\Mediator;
 use App\Models\Role;
 use App\Models\User;
+use App\Services\IssueService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
 use Symfony\Component\HttpFoundation\Response;
 
 
@@ -104,6 +102,18 @@ class AdminController extends Controller
      */
     public function deleteUser(User $user)
     {
+        if($user->isManager()) {
+
+            //detach issues' from deleted manager and notify senior managers about it
+            $issueService = app(IssueService::class);
+            $issuesManagedByDeletedUser = $user->issuesManaged()->get();
+            foreach ($issuesManagedByDeletedUser as $issue) {
+                $issueService->detachManager($issue);
+                IssueDetachedEvent::dispatch($issue);
+            }
+        }
+
+        //delete user
         $this->mediator->service->delete($user->id);
         $this->mediator->repository->resetCache($user->id);
 

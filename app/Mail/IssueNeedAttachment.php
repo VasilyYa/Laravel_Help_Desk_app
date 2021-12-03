@@ -10,7 +10,7 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Config;
 
-class IssueCreated extends Mailable
+class IssueNeedAttachment extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -37,8 +37,8 @@ class IssueCreated extends Mailable
     {
         return $this
             ->from(Config::get('mail.from.address'), Config::get('mail.from.name'))
-            ->subject('Уведомление о создании новой заявки')
-            ->markdown('emails.issue-created-markdown', [
+            ->subject('Уведомление о необходимости прикрепления заявки')
+            ->markdown('emails.issue-need-attachment-markdown', [
                 'issue' => $this->issue,
                 'user' => $this->user
             ]);

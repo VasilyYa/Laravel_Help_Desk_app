@@ -3,7 +3,8 @@
 namespace App\Providers;
 
 use App\Events\IssueCreatedEvent;
-use App\Listeners\IssueCreatedListener;
+use App\Events\IssueDetachedEvent;
+use App\Listeners\IssueNeedAttachmentListener;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -21,7 +22,10 @@ class EventServiceProvider extends ServiceProvider
             SendEmailVerificationNotification::class,
         ],
         IssueCreatedEvent::class => [
-            IssueCreatedListener::class,
+            IssueNeedAttachmentListener::class,
+        ],
+        IssueDetachedEvent::class => [
+            IssueNeedAttachmentListener::class,
         ],
     ];
 

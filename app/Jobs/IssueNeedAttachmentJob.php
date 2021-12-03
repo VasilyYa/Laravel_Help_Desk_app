@@ -2,7 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Mail\CommentWasWritten;
+use App\Mail\IssueNeedAttachment;
 use App\Models\Issue;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
@@ -13,7 +13,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Mail;
 
-class CommentWasWrittenJob implements ShouldQueue
+class IssueNeedAttachmentJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -27,6 +27,7 @@ class CommentWasWrittenJob implements ShouldQueue
      */
     public function __construct(Issue $issue, User $user)
     {
+
         $this->issue = $issue;
         $this->user = $user;
     }
@@ -38,6 +39,6 @@ class CommentWasWrittenJob implements ShouldQueue
      */
     public function handle()
     {
-        Mail::to($this->user)->send(new CommentWasWritten($this->issue, $this->user));
+        Mail::to($this->user)->send(new IssueNeedAttachment($this->issue, $this->user));
     }
 }
