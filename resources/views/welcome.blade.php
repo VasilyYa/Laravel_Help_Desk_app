@@ -21,7 +21,13 @@
         </style>
     </head>
     <body class="antialiased">
-        <div class="relative flex items-top justify-center min-h-screen bg-gray-100 dark:bg-gray-900 sm:items-center py-4 sm:pt-0">
+        <div class="relative flex flex-col items-top justify-center min-h-screen bg-gray-100 dark:bg-gray-900 sm:items-center py-4 sm:pt-0" style="flex-direction: column;">
+
+            <div class="flex justify-center pt-8 sm:justify-between sm:pt-0">
+                {{-- LOGO --}}
+                {{ __('Welcome to the technical support service!') }}
+            </div>
+
             @if (Route::has('login'))
                 <div class="px-6 py-4 sm:block">
                     @auth
@@ -36,9 +42,6 @@
                 </div>
             @endif
 
-                <div class="flex justify-center pt-8 sm:justify-between sm:pt-0">
-                    {{-- LOGO --}}
-                </div>
         </div>
     </body>
 </html>

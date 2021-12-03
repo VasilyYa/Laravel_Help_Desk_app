@@ -1,6 +1,6 @@
 @component('mail::message')
 
-Здравствуйте, {{ $user->full_name }}
+Здравствуйте, {{ $user->full_name }} !
 
 По заявке № {{ $issue->id }} добавлены новые комментарии.
 

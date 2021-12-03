@@ -1,6 +1,6 @@
 @component('mail::message')
 
-Здравствуйте, {{ $user->full_name }}
+Здравствуйте, {{ $user->full_name }} !
 
 Статус заявки № {{ $issue->id }} изменился на "{{ $issue->status->description }}".
 
