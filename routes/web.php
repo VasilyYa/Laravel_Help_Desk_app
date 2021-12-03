@@ -42,6 +42,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     });
 
     Route::group(['prefix' => 'comments'], function () {
+        Route::get('/{comment}', [CommentController::class, 'show'])->where(['comment' => '[0-9]{1,18}'])->name('commentsShow')->middleware('can:view,comment');
         Route::post('/', [CommentController::class, 'store'])->name('commentsStore')->middleware('can:create,' . Comment::class);
     });
 
