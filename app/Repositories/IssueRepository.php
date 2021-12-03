@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Models\Issue;
 use App\Models\User;
 use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Cache;
 
@@ -71,5 +72,12 @@ class IssueRepository extends Repository
 
         //retrieve tagged cache by key name
         return Cache::tags($tagName)->get($keyName);
+    }
+
+    public function getAllInactive(int $daysOfInactivity): Collection
+    {
+        return $this->startCondition()->query()
+            ->where('updated_at','<=', now()->addDays(-$daysOfInactivity))
+            ->get();
     }
 }

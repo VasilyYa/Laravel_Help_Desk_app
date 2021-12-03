@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Console\Commands\CleanInactiveIssues;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\IssueController;
@@ -45,6 +46,14 @@ class AppServiceProvider extends ServiceProvider
                 return new Mediator(
                     $this->app->make(UserRepository::class),
                     $this->app->make(UserService::class)
+                );
+            });
+        $this->app->when([CleanInactiveIssues::class])
+            ->needs(Mediator::class)
+            ->give(function () {
+                return new Mediator(
+                    $this->app->make(IssueRepository::class),
+                    $this->app->make(IssueService::class)
                 );
             });
     }
