@@ -22,6 +22,7 @@ class Issue extends Model
         'status_id',
         'client_id',
         'manager_id',
+        'updated_at',
     ];
 
     public function isAttached(): bool

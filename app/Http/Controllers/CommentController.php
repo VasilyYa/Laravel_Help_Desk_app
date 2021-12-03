@@ -62,13 +62,15 @@ class CommentController extends Controller
         //actualize an issue - need for relevance control !!!
         $issueService->setUpdatedAtToNow($issue);
 
-        $delay = now()->addSeconds(5);
+        $jobDelay = now()->addSeconds(2);
 
         //change issue status and notify the users (depending on app business logic):
         if (auth()->user()->isClient()) { // or $comment->author->isClient()
 
             //notify manager about new comments from client
-            CommentWasWrittenJob::dispatch($issue, $issue->manager)->delay($delay);
+            if($issue->isAttached()) {
+                CommentWasWrittenJob::dispatch($issue, $issue->manager)->delay($jobDelay);
+            }
 
             if ($issue->status->isWaitForClientAnswer()) {
 
@@ -82,7 +84,7 @@ class CommentController extends Controller
             $issueService->setStatusWaitForClientAnswer($issue);
 
             //notify client about changing issue status
-            IssueChangeStatusJob::dispatch($issue, $issue->client)->delay($delay);
+            IssueChangeStatusJob::dispatch($issue, $issue->client)->delay($jobDelay);
         }
 
         return response()->json(

@@ -5,15 +5,14 @@ namespace App\Http\Controllers;
 use App\Events\IssueCreatedEvent;
 use App\Http\Requests\AttachRequest;
 use App\Http\Requests\IssueRequest;
+use App\Jobs\CommentWasWrittenJob;
 use App\Mediators\Mediator;
 use App\Models\Issue;
-use App\Models\User;
 use App\Repositories\UserRepository;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Log;
 
 class IssueController extends Controller
 {
@@ -95,13 +94,21 @@ class IssueController extends Controller
      * Attach a free issue to manager.
      *
      * @param AttachRequest $request
+     * @param Issue $issue
      * @return JsonResponse
      */
     public function attach(AttachRequest $request, Issue $issue)
     {
         $this->mediator->service->update($issue, [
-            'manager_id' => $request->input('manager_id')
+            'manager_id' => $request->input('manager_id'),
         ]);
+
+        $this->mediator->service->setStatusWaitForManagerAnswer($issue);
+
+        //notify manager about attachement (=new comments from client)
+        if(!auth()->user()->isManager()) {
+            CommentWasWrittenJob::dispatch($issue, $issue->manager);
+        }
 
         return response()->json([],Response::HTTP_OK);
     }
