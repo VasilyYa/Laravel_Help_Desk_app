@@ -31,6 +31,7 @@ class IssueController extends Controller
     public function index()
     {
         $issuesPaginator = $this->mediator->repository->getAllPaginatorOrdDescByUpdated(10);
+
         return view('issues.list', compact('issuesPaginator'));
     }
 
@@ -57,7 +58,6 @@ class IssueController extends Controller
             'issuesPaginator' => $this->mediator->repository->getAllNotAttachedPaginatorOrdDescByUpdated(10)
         ]);
     }
-
 
     /**
      * Show the form for creating a new issue.
@@ -107,6 +107,7 @@ class IssueController extends Controller
 
         //notify manager about attachement (=new comments from client)
         if(!auth()->user()->isManager()) {
+
             CommentWasWrittenJob::dispatch($issue, $issue->manager);
         }
 
@@ -140,7 +141,7 @@ class IssueController extends Controller
      */
     public function edit($id)
     {
-        //
+        return response('stub');
     }
 
     /**
@@ -152,7 +153,7 @@ class IssueController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        return response('stub');
     }
 
     /**
@@ -166,6 +167,8 @@ class IssueController extends Controller
         $this->mediator->service->setStatusClosed($issue);
         $this->mediator->service->delete($issue->id);
         $this->mediator->repository->resetCache($issue->id);
+
         return response()->json([], Response::HTTP_NO_CONTENT);
     }
+
 }

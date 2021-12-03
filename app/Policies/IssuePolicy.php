@@ -22,6 +22,17 @@ class IssuePolicy
     }
 
     /**
+     * Determine whether the user can view any models.
+     *
+     * @param User $user
+     * @return bool
+     */
+    public function viewNotAttached(User $user)
+    {
+        return $user->isAdmin() || $user->isSeniorManager() || $user->isManager();
+    }
+
+    /**
      * Determine whether the user can view the model.
      *
      * @param User $user
@@ -69,9 +80,9 @@ class IssuePolicy
      */
     public function attach(User $user, Issue $issue)
     {
-        return (auth()->user()->isManager() && !$issue->isAttached()) ||
-            auth()->user()->isSeniorManager() ||
-            auth()->user()->isAdmin();
+        return ($user->isManager() && !$issue->isAttached()) ||
+            $user->isSeniorManager() ||
+            $user->isAdmin();
     }
 
     /**

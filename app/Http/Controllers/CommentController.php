@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CommentRequest;
 use App\Jobs\CommentWasWrittenJob;
 use App\Jobs\IssueChangeStatusJob;
-use App\Mail\IssueChangeStatus;
 use App\Mediators\Mediator;
 use App\Models\Comment;
 use App\Repositories\IssueRepository;
@@ -13,7 +12,6 @@ use App\Services\IssueService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Mail;
 
 class CommentController extends Controller
 {
@@ -31,7 +29,7 @@ class CommentController extends Controller
      */
     public function index()
     {
-        //
+        return response('stub');
     }
 
     /**
@@ -41,7 +39,7 @@ class CommentController extends Controller
      */
     public function create()
     {
-        //
+        return response('stub');
     }
 
     /**
@@ -68,7 +66,8 @@ class CommentController extends Controller
         if (auth()->user()->isClient()) { // or $comment->author->isClient()
 
             //notify manager about new comments from client
-            if($issue->isAttached()) {
+            if ($issue->isAttached()) {
+
                 CommentWasWrittenJob::dispatch($issue, $issue->manager)->delay($jobDelay);
             }
 
@@ -81,6 +80,7 @@ class CommentController extends Controller
             auth()->user()->isManager() // or $comment->author->isManager()
             && ($issue->status->isWaitForManagerAnswer() || $issue->status->isOpened())
         ) {
+
             $issueService->setStatusWaitForClientAnswer($issue);
 
             //notify client about changing issue status
@@ -98,12 +98,11 @@ class CommentController extends Controller
      * Display the specified resource.
      *
      * @param Comment $comment
-     * @return JsonResponse
+     * @return \Illuminate\Http\Response
      */
-    public
-    function show(Comment $comment)
+    public function show(Comment $comment)
     {
-        return response()->json(['data' => $comment]);
+        return response('stub');
     }
 
     /**
@@ -112,10 +111,9 @@ class CommentController extends Controller
      * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public
-    function edit($id)
+    public function edit($id)
     {
-        //
+        return response('stub');
     }
 
     /**
@@ -125,10 +123,9 @@ class CommentController extends Controller
      * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public
-    function update(Request $request, $id)
+    public function update(Request $request, $id)
     {
-        //
+        return response('stub');
     }
 
     /**
@@ -137,9 +134,9 @@ class CommentController extends Controller
      * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public
-    function destroy($id)
+    public function destroy($id)
     {
-        //
+        return response('stub');
     }
+
 }

@@ -33,7 +33,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
     Route::group(['prefix' => 'issues'], function () {
         Route::get('/', [IssueController::class, 'listForUser'])->name('issuesListForUser');
-        Route::get('/not-attached', [IssueController::class, 'listNotAttached'])->name('issuesListNotAttached');
+        Route::get('/not-attached', [IssueController::class, 'listNotAttached'])->name('issuesListNotAttached')->middleware('can:viewNotAttached,' . Issue::class);
         Route::post('/{issue}/attach', [IssueController::class, 'attach'])->where(['issue' => '[0-9]{1,18}'])->name('issuesAttach')->middleware('can:attach,issue');
         Route::get('/{issue}', [IssueController::class, 'show'])->where(['issue' => '[0-9]{1,18}'])->name('issuesShow')->middleware('can:view,issue');
         Route::get('/create', [IssueController::class, 'create'])->name('issuesCreate')->middleware('can:create,' . Issue::class);
@@ -42,7 +42,6 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     });
 
     Route::group(['prefix' => 'comments'], function () {
-        Route::get('/{comment}', [CommentController::class, 'show'])->where(['comment' => '[0-9]{1,18}'])->name('commentsShow')->middleware('can:view,comment');
         Route::post('/', [CommentController::class, 'store'])->name('commentsStore')->middleware('can:create,' . Comment::class);
     });
 

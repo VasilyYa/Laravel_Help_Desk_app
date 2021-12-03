@@ -161,8 +161,8 @@
                     <span class="underline">
                         @if($comment->author_id == auth()->user()->id)
                             От Вас
-                        @elseif($comment->author()->first() !== null)
-                            От {{ $comment->author()->first()->full_name }}
+                        @elseif($comment->author !== null)
+                            От {{ $comment->author->full_name }}
                         @else
                             От {{ $comment->author()->withTrashed()->first()->full_name }} <span class="bg-red-600 text-white text-sm rounded">(пользователь был удален)</span>
                         @endif
