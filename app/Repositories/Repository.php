@@ -49,12 +49,16 @@ abstract class Repository implements RepositoryInterface
         return $this->startCondition()->all();
     }
 
-    public function getAllPaginator(int $perPage): LengthAwarePaginator
+    public function getAllOnPage(int $perPage): LengthAwarePaginator
     {
         return $this->startCondition()
             ->orderBy('id')
             ->paginate($perPage);
     }
 
+    public function flushTaggedCache(int $onlyById = null)
+    {
+        return;
+    }
 
 }

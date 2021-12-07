@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Cache;
 
 abstract class RepositoryWithCaching implements RepositoryInterface
 {
-    const CACHE_TTL = 60; //(sec.) default value
+    const CACHE_TTL = 300; //(sec.) default value
     protected string $tagName;
     protected string $keyPrefix;
 
@@ -21,7 +21,7 @@ abstract class RepositoryWithCaching implements RepositoryInterface
     {
         $this->model = app($this->getModelClass());
 
-        $this->tagName = $this->getModelClass() . '-TAG'; // tag of entity
+        $this->tagName = $this->getModelClass() . '-TAG'; // tag name by concrete model
         $this->keyPrefix = $this->getModelClass();
     }
 
@@ -36,7 +36,7 @@ abstract class RepositoryWithCaching implements RepositoryInterface
     {
         $keyName = $this->keyPrefix . '-ById' . $id;
 
-        return Cache::tags($this->tagName) // tag the cache
+        return Cache::tags($this->tagName) // tag the cache, retrieve from tagged cache
         ->remember($keyName, self::CACHE_TTL, function () use ($id) {
             return $this->startCondition()
                 ->where('id', $id)
@@ -79,7 +79,7 @@ abstract class RepositoryWithCaching implements RepositoryInterface
             });
     }
 
-    public function getAllPaginator(int $perPage): LengthAwarePaginator
+    public function getAllOnPage(int $perPage): LengthAwarePaginator
     {
         $keyName = $this->keyPrefix . '-AllOnPage' . (request('page') ?? '1');
 

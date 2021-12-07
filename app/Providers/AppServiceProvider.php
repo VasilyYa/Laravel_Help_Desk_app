@@ -9,6 +9,7 @@ use App\Http\Controllers\IssueController;
 use App\Mediators\Mediator;
 use App\Repositories\CommentRepository;
 use App\Repositories\IssueRepository;
+use App\Repositories\IssueRepositoryWithCaching;
 use App\Repositories\UserRepository;
 use App\Services\CommentService;
 use App\Services\IssueService;
@@ -28,7 +29,8 @@ class AppServiceProvider extends ServiceProvider
             ->needs(Mediator::class)
             ->give(function () {
                 return new Mediator(
-                    $this->app->make(IssueRepository::class),
+                    //$this->app->make(IssueRepository::class),
+                    $this->app->make(IssueRepositoryWithCaching::class),
                     $this->app->make(IssueService::class)
                 );
             });
@@ -48,6 +50,7 @@ class AppServiceProvider extends ServiceProvider
                     $this->app->make(UserService::class)
                 );
             });
+
         $this->app->when([CleanInactiveIssues::class])
             ->needs(Mediator::class)
             ->give(function () {

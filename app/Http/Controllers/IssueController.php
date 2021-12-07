@@ -43,7 +43,7 @@ class IssueController extends Controller
     public function listForUser()
     {
         return view('issues.list',
-            ['issuesPaginator' => $this->mediator->repository->getAllForUserPaginatorOrdDescByUpdated(10, auth()->user())]
+            ['issuesPaginator' => $this->mediator->repository->getAllForUserOnPage(10, auth()->user())]
         );
     }
 
@@ -55,7 +55,7 @@ class IssueController extends Controller
     public function listNotAttached()
     {
         return view('issues.list', [
-            'issuesPaginator' => $this->mediator->repository->getAllNotAttachedPaginatorOrdDescByUpdated(10)
+            'issuesPaginator' => $this->mediator->repository->getNotAttachedOnPage(10)
         ]);
     }
 
@@ -81,6 +81,8 @@ class IssueController extends Controller
         $issue = $this->mediator->service->create($request->all());
 
         IssueCreatedEvent::dispatch($issue);
+
+        $this->mediator->repository->flushTaggedCache();
 
         return response()->json(
             [],
@@ -110,6 +112,8 @@ class IssueController extends Controller
         if(!auth()->user()->isManager()) {
             CommentWasWrittenJob::dispatch($issue, $issue->manager);
         }
+
+        $this->mediator->repository->flushTaggedCache();
 
         return response()->json([],Response::HTTP_OK);
     }
@@ -166,6 +170,8 @@ class IssueController extends Controller
     {
         $this->mediator->service->setStatusClosed($issue);
         $this->mediator->service->delete($issue->id);
+
+        $this->mediator->repository->flushTaggedCache();
 
         return response()->json([], Response::HTTP_NO_CONTENT);
     }

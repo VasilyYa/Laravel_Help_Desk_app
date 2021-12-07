@@ -30,7 +30,7 @@ class AdminController extends Controller
     public function index()
     {
         return view('admin.panel', [
-            'usersPaginator' => $this->mediator->repository->getAllExceptAdminsPaginator(10)
+            'usersPaginator' => $this->mediator->repository->getAllExceptAdminsOnPage(10)
         ]);
     }
 

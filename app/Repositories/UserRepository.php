@@ -16,7 +16,7 @@ class UserRepository extends Repository
         return User::class;
     }
 
-    public function getAllExceptAdminsPaginator(int $perPage): LengthAwarePaginator
+    public function getAllExceptAdminsOnPage(int $perPage): LengthAwarePaginator
     {
         return $this->startCondition()
             ->where('role_id', '!=', 4)
@@ -24,7 +24,7 @@ class UserRepository extends Repository
             ->paginate($perPage);
     }
 
-    public function getAllExceptIdPaginator(int $perPage, int $exceptId): LengthAwarePaginator
+    public function getAllExceptIdOnPage(int $perPage, int $exceptId): LengthAwarePaginator
     {
         return $this->startCondition()
             ->where('id', '!=', $exceptId)

@@ -24,9 +24,9 @@ class IssueRepositoryWithCaching extends RepositoryWithCaching
      * @param int $perPage
      * @return LengthAwarePaginator
      */
-    public function getAllNotAttachedPaginatorOrdDescByUpdated(int $perPage): LengthAwarePaginator
+    public function getNotAttachedOnPage(int $perPage): LengthAwarePaginator
     {
-        $keyName = $this->keyPrefix . '-NotAttachedOrderedDescByUpdatedOnPage' . (request('page') ?? '1');
+        $keyName = $this->keyPrefix . '-NotAttachedOnPage' . (request('page') ?? '1');
 
         return Cache::tags($this->tagName)
             ->remember($keyName, self::CACHE_TTL, function () use ($perPage) {
@@ -37,9 +37,9 @@ class IssueRepositoryWithCaching extends RepositoryWithCaching
             });
     }
 
-    public function getAllPaginatorOrdDescByUpdated(int $perPage): LengthAwarePaginator
+    public function getAllOnPage(int $perPage): LengthAwarePaginator
     {
-        $keyName = $this->keyPrefix . '-AllOrderedDescByUpdatedAtOnPage' . (request('page') ?? '1');
+        $keyName = $this->keyPrefix . '-AllOnPage' . (request('page') ?? '1');
 
         return Cache::tags($this->tagName)
         ->remember($keyName, self::CACHE_TTL, function () use ($perPage) {
@@ -57,10 +57,10 @@ class IssueRepositoryWithCaching extends RepositoryWithCaching
      * @param User|Authenticatable|null $user
      * @return LengthAwarePaginator
      */
-    public function getAllForUserPaginatorOrdDescByUpdated(int $perPage, User|Authenticatable $user = null): LengthAwarePaginator
+    public function getAllForUserOnPage(int $perPage, User|Authenticatable $user = null): LengthAwarePaginator
     {
         if (!isset($user)) {
-            return $this->getAllPaginatorOrdDescByUpdated($perPage);
+            return $this->getAllOnPage($perPage);
         }
 
         $keyName = $this->keyPrefix . '-AllForUser' . $user->id . 'OnPage'. (request('page') ?? '1');

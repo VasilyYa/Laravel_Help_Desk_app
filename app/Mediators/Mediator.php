@@ -2,18 +2,18 @@
 
 namespace App\Mediators;
 
-use App\Repositories\Repository;
-use App\Services\Service;
+use App\Repositories\RepositoryInterface;
+use App\Services\ServiceInterface;
 
 class Mediator
 {
-    /** @var Repository  */
-    public Repository $repository;
+    /** @var RepositoryInterface  */
+    public RepositoryInterface $repository;
 
-    /** @var Service  */
-    public Service $service;
+    /** @var ServiceInterface  */
+    public ServiceInterface $service;
 
-    public function __construct(Repository $repository, Service $service)
+    public function __construct(RepositoryInterface $repository, ServiceInterface $service)
     {
         $this->repository = $repository;
         $this->service = $service;

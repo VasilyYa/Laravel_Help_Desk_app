@@ -13,5 +13,7 @@ interface RepositoryInterface
     public function getByIdWithTrashed(int $id): ?Model;
 
     public function getAll(): Collection;
-    public function getAllPaginator(int $perPage): LengthAwarePaginator;
+    public function getAllOnPage(int $perPage): LengthAwarePaginator;
+
+    public function flushTaggedCache();
 }
