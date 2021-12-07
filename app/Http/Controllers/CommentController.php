@@ -10,7 +10,6 @@ use App\Models\Comment;
 use App\Repositories\IssueRepository;
 use App\Services\IssueService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class CommentController extends Controller
@@ -25,7 +24,7 @@ class CommentController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index()
     {
@@ -35,7 +34,7 @@ class CommentController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function create()
     {
@@ -46,29 +45,26 @@ class CommentController extends Controller
      * Store a newly created resource in storage.
      *
      * @param CommentRequest $request
+     * @param IssueRepository $issueRepository
+     * @param IssueService $issueService
      * @return JsonResponse
      */
-    public function store(CommentRequest $request)
+    public function store(CommentRequest $request, IssueRepository $issueRepository, IssueService $issueService)
     {
         //store a comment
         $comment = $this->mediator->service->create($request->all());
 
-        $issueRepository = app(IssueRepository::class);
-        $issueService = app(IssueService::class);
         $issue = $issueRepository->getById($request->input('issue_id'));
 
         //actualize an issue - need for relevance control !!!
         $issueService->setUpdatedAtToNow($issue);
 
-        $jobDelay = now()->addSeconds(2);
-
-        //change issue status and notify the users (depending on app business logic):
+        //change issue status and notify the users (business logic):
         if (auth()->user()->isClient()) { // or $comment->author->isClient()
 
-            //notify manager about new comments from client
+            //notify the manager about new comments from client
             if ($issue->isAttached()) {
-
-                CommentWasWrittenJob::dispatch($issue, $issue->manager)->delay($jobDelay);
+                CommentWasWrittenJob::dispatch($issue, $issue->manager);
             }
 
             if ($issue->status->isWaitForClientAnswer()) {
@@ -83,8 +79,10 @@ class CommentController extends Controller
 
             $issueService->setStatusWaitForClientAnswer($issue);
 
-            //notify client about changing issue status
-            IssueChangeStatusJob::dispatch($issue, $issue->client)->delay($jobDelay);
+            //notify the client about changing issue status
+            if (!is_null($issue->client)) { //soft delete user checking
+                IssueChangeStatusJob::dispatch($issue, $issue->client);
+            }
         }
 
         return response()->json(
@@ -98,7 +96,7 @@ class CommentController extends Controller
      * Display the specified resource.
      *
      * @param Comment $comment
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function show(Comment $comment)
     {
@@ -109,7 +107,7 @@ class CommentController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param int $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function edit($id)
     {
@@ -119,11 +117,11 @@ class CommentController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param CommentRequest $request
      * @param int $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
-    public function update(Request $request, $id)
+    public function update(CommentRequest $request, $id)
     {
         return response('stub');
     }
@@ -132,7 +130,7 @@ class CommentController extends Controller
      * Remove the specified resource from storage.
      *
      * @param int $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function destroy($id)
     {

@@ -48,7 +48,7 @@ class IssueController extends Controller
     }
 
     /**
-     * Display a listing of the free issues.
+     * Display a listing of the free (not attached) issues.
      *
      * @return View
      */
@@ -70,7 +70,7 @@ class IssueController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created resource in storage + generate event.
      *
      * @param IssueRequest $request
      * @return JsonResponse
@@ -80,7 +80,6 @@ class IssueController extends Controller
         $request->merge(['status_id' => 1, 'client_id' => auth()->user()->id]); //for safety reasons
         $issue = $this->mediator->service->create($request->all());
 
-        //notify senior manager about created issue
         IssueCreatedEvent::dispatch($issue);
 
         return response()->json(
@@ -91,7 +90,7 @@ class IssueController extends Controller
     }
 
     /**
-     * Attach a free issue to manager.
+     * Attach the issue to the manager + queue up notification job.
      *
      * @param AttachRequest $request
      * @param Issue $issue
@@ -99,15 +98,16 @@ class IssueController extends Controller
      */
     public function attach(AttachRequest $request, Issue $issue)
     {
+        //attach the issue
         $this->mediator->service->update($issue, [
             'manager_id' => $request->input('manager_id'),
         ]);
 
+        //change issue status
         $this->mediator->service->setStatusWaitForManagerAnswer($issue);
 
-        //notify manager about attachement (=new comments from client)
+        //notify the manager about attachment (like new comments were written by client)
         if(!auth()->user()->isManager()) {
-
             CommentWasWrittenJob::dispatch($issue, $issue->manager);
         }
 
@@ -115,14 +115,14 @@ class IssueController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Display the issue.
      *
-     * @param int $issue
+     * @param Issue $issue
+     * @param UserRepository $userRepository
      * @return View
      */
-    public function show(Issue $issue)
+    public function show(Issue $issue, UserRepository $userRepository)
     {
-        $userRepository = app(UserRepository::class);
         $managers = $userRepository->getAllManagers();
         $attachedManager = $userRepository->getManagerOf($issue);
 
@@ -134,7 +134,7 @@ class IssueController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Show the form for editing the issue.
      *
      * @param int $id
      * @return Response
@@ -145,7 +145,7 @@ class IssueController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the issue.
      *
      * @param \Illuminate\Http\Request $request
      * @param int $id
@@ -157,7 +157,7 @@ class IssueController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the issue from storage.
      *
      * @param Issue $issue
      * @return JsonResponse
@@ -166,7 +166,6 @@ class IssueController extends Controller
     {
         $this->mediator->service->setStatusClosed($issue);
         $this->mediator->service->delete($issue->id);
-        $this->mediator->repository->resetCache($issue->id);
 
         return response()->json([], Response::HTTP_NO_CONTENT);
     }

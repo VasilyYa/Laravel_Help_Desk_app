@@ -7,7 +7,6 @@ use App\Models\User;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Facades\Cache;
 
 class IssueRepository extends Repository
 {
@@ -26,18 +25,17 @@ class IssueRepository extends Repository
      */
     public function getAllNotAttachedPaginatorOrdDescByUpdated(int $perPage): LengthAwarePaginator
     {
-        $tagName = $this->getModelClass() . '-NotAttachedOrderedDescByUpdatedOnPage';
-        $keyName = $tagName . (request('page') ?? '1');
-        Cache::tags($tagName)
-            ->remember($keyName, self::CACHE_TTL, function () use ($perPage) {
-                return $this->startCondition()
-                    ->where('manager_id', null)
-                    ->orderByDesc('updated_at')
-                    ->paginate($perPage);
-            });
+        return $this->startCondition()
+            ->where('manager_id', null)
+            ->orderByDesc('updated_at')
+            ->paginate($perPage);
+    }
 
-        //retrieve tagged cache by key name
-        return Cache::tags($tagName)->get($keyName);
+    public function getAllPaginatorOrdDescByUpdated(int $perPage): LengthAwarePaginator
+    {
+        return $this->startCondition()
+            ->orderByDesc('updated_at')
+            ->paginate($perPage);
     }
 
     /**
@@ -54,30 +52,21 @@ class IssueRepository extends Repository
             return $this->getAllPaginatorOrdDescByUpdated($perPage);
         }
 
-        $tagName = $this->getModelClass() . '-AllForUser' . $user->id . 'OnPage';
-        $keyName = $tagName . (request('page') ?? '1');
-        Cache::tags($tagName)
-            ->remember($keyName, self::CACHE_TTL, function () use ($user, $perPage) {
-                $query = $this->startCondition();
-                if ($user->isClient()) {
-                    $query = $query->where('client_id', $user->id);
-                }
-                if ($user->isManager()) {
-                    $query = $query = Issue::query()
-                        ->where('manager_id', $user->id);
-                }
-
-                return $query->orderByDesc('updated_at')->paginate($perPage);
-            });
-
-        //retrieve tagged cache by key name
-        return Cache::tags($tagName)->get($keyName);
+        $query = $this->startCondition();
+        if ($user->isClient()) {
+            $query = $query->where('client_id', $user->id);
+        }
+        if ($user->isManager()) {
+            $query = $query = Issue::query()
+                ->where('manager_id', $user->id);
+        }
+        return $query->orderByDesc('updated_at')->paginate($perPage);
     }
 
     public function getAllInactive(int $daysOfInactivity): Collection
     {
         return $this->startCondition()->query()
-            ->where('updated_at','<=', now()->addDays(-$daysOfInactivity))
+            ->where('updated_at', '<=', now()->addDays(-$daysOfInactivity))
             ->get();
     }
 }
